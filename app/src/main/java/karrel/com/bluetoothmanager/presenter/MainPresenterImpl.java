@@ -57,6 +57,11 @@ public class MainPresenterImpl implements MainPresenter {
         @Override
         public void onSearchedDevice(BluetoothDevice device) {
             RLog.d("device : " + device.getName());
+
+            String name = device.getName();
+            if (name.equals("MASSAGE")) {
+                bluetoothManager.connect(device);
+            }
         }
     };
 }

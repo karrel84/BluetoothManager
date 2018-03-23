@@ -6,4 +6,6 @@ package karrel.com.btconnector.btscanner;
 
 public interface BtScannerable {
     void startBtScan();
+
+    void stopScan();
 }

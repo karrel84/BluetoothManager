@@ -16,8 +16,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import karrel.com.btconnector.BtChatListener;
-import karrel.com.btconnector.BtChatManager;
+import karrel.com.btconnector.chatmanager.BtChatListener;
+import karrel.com.btconnector.chatmanager.BtChatManager;
 import karrel.com.btconnector.BtLifecyclable;
 import karrel.com.btconnector.BtScanListener;
 import karrel.com.btconnector.btscanner.BtScanner;

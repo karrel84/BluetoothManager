@@ -1,4 +1,4 @@
-package karrel.com.btconnector;
+package karrel.com.btconnector.chatmanager;
 
 import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothDevice;
@@ -6,6 +6,9 @@ import android.os.Handler;
 import android.os.Message;
 
 import com.karrel.mylibrary.RLog;
+
+import karrel.com.btconnector.BtService;
+import karrel.com.btconnector.Constants;
 
 /**
  * Created by Rell on 2018. 1. 29..

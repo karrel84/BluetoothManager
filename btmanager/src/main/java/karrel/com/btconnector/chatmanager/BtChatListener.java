@@ -1,4 +1,4 @@
-package karrel.com.btconnector;
+package karrel.com.btconnector.chatmanager;
 
 /**
  * Created by Rell on 2018. 1. 29..

@@ -1,5 +1,6 @@
 package karrel.com.btconnector.btscanner;
 
+import android.annotation.TargetApi;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.le.BluetoothLeScanner;
@@ -55,10 +56,8 @@ public class LeBtSanner extends BtScanner {
         // 블루투스가 검색되면 전달할 서브젝트를 초기화 한다
         bdSubject = PublishSubject.create();
 
-        if (subscriptionDevices != null) {
-            subscriptionDevices.unsubscribe();
-            subscriptionDevices = null;
-        }
+        // 블루투스 객체를 전달하는 섭스크립션을 클리어
+        clearDeviceSubscription();
 
         subscriptionDevices = bdSubject
                 .onBackpressureDrop() // 백프레져는 버린다
@@ -82,6 +81,14 @@ public class LeBtSanner extends BtScanner {
                         listener.onSearchedDevice(device);
                     }
                 });
+    }
+
+    // 블루투스 객체를 전달하는 섭스크립션을 클리어
+    private void clearDeviceSubscription() {
+        if (subscriptionDevices != null) {
+            subscriptionDevices.unsubscribe();
+            subscriptionDevices = null;
+        }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
@@ -114,7 +121,7 @@ public class LeBtSanner extends BtScanner {
 
         @Override
         public void onScanFailed(int errorCode) {
-            RLog.d(".onScanFailed");
+            RLog.e("errorCode : " + errorCode);
         }
 
         @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -133,10 +140,21 @@ public class LeBtSanner extends BtScanner {
     // 안드로이드 펌웨어 5.0 미만에서 사용되던 스캔 콜백이다.
     private BluetoothAdapter.LeScanCallback leScanCallback = (device, rssi, scanRecord) -> {
         try {
-//            RLog.d(String.format("name : %s rssi : %s", device.getName(), rssi));
             bdSubject.onNext(device);
         } catch (Exception e) {
             e.printStackTrace();
         }
     };
+
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
+    @Override
+    public void stopScan() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            leScanner.stopScan(scanCallback);
+        } else {
+            btAdapter.stopLeScan(leScanCallback);
+        }
+
+        clearDeviceSubscription();
+    }
 }

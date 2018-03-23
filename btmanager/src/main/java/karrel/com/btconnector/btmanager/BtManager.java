@@ -12,6 +12,8 @@ import java.util.ArrayList;
 import karrel.com.btconnector.btscanner.BtScanner;
 import karrel.com.btconnector.btscanner.BtScannerable;
 import karrel.com.btconnector.btscanner.LeBtSanner;
+import karrel.com.btconnector.chatmanager.BtChatListener;
+import karrel.com.btconnector.chatmanager.BtChatManager;
 import karrel.com.btconnector.permission.PermissionCheckable;
 import karrel.com.btconnector.permission.PermissionChecker;
 import rx.Observable;
@@ -43,6 +45,9 @@ public class BtManager implements BtListener, BtManagerable {
     // 블루투스 콜백
     private BtListener callback;
 
+    // 채팅 매니저
+    private BtChatManager chatManager = BtChatManager.getInstance();
+
     // 싱글턴
     public static BtManager getInstance(Context context, BtListener listener) {
         if (mBtManager == null) {
@@ -53,14 +58,14 @@ public class BtManager implements BtListener, BtManagerable {
 
     // 생성자
     public BtManager(Context context, BtListener listener) {
-        permissionChecker = new PermissionChecker(context);
-        btScanner = new LeBtSanner(btScannerListener);
-        addListener(listener);
-    }
-
-    // 콜백 추가
-    public void addListener(BtListener listener) {
         callback = listener;
+
+        // 퍼미션 체커
+        permissionChecker = new PermissionChecker(context);
+        // 디바이스 스캐너
+        btScanner = new LeBtSanner(btScannerListener);
+        // 채팅 매니저 콜백
+        chatManager.setListener(chatCallback);
     }
 
     // 권한이 거부됨
@@ -109,6 +114,14 @@ public class BtManager implements BtListener, BtManagerable {
         });
     }
 
+    @Override
+    public void connect(BluetoothDevice device) {
+        // 스캔 중지
+        btScanner.stopScan();
+        // 블루투스 접속
+        chatManager.connect(device);
+    }
+
     // 퍼미션 체크
     private void checkPermission(PermissionListener listener) {
         permissionChecker.checkPermission(permissions, listener);
@@ -130,8 +143,45 @@ public class BtManager implements BtListener, BtManagerable {
 
         @Override
         public void onSearchedDevice(BluetoothDevice device) {
-//            RLog.d(String.format("검색된 기기는 %s", device.getName()));
             BtManager.this.onSearchedDevice(device);
+        }
+    };
+
+    // 채팅 매니저
+    private final BtChatListener chatCallback = new BtChatListener() {
+        @Override
+        public void onConnected(String deviceName) {
+            RLog.d();
+        }
+
+        @Override
+        public void onConnecting(String deviceName) {
+            RLog.d();
+        }
+
+        @Override
+        public void onConnectFailed(String deviceName) {
+            RLog.d();
+        }
+
+        @Override
+        public void onMessageSend(byte[] writeBuf) {
+            RLog.d();
+        }
+
+        @Override
+        public void onReadMessage(byte[] readBuf) {
+            RLog.d();
+        }
+
+        @Override
+        public void onStartConnect(String deviceName) {
+            RLog.d();
+        }
+
+        @Override
+        public void onRetry(String deviceName, int cnt) {
+            RLog.d();
         }
     };
 }
