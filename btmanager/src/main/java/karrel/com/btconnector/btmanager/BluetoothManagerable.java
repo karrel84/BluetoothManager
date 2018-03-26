@@ -8,7 +8,10 @@ import android.bluetooth.BluetoothDevice;
 
 public interface BluetoothManagerable {
     // 블루투스 스캔
-    void scanBluetooth();
+    void startBluetoothDeviceScan();
+
+    // 블루투스 스캔 중지
+    void stopBluetoothDeviceScan();
 
     // 블루투스 연결
     void connect(BluetoothDevice device);

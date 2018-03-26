@@ -96,7 +96,7 @@ public class BluetoothManager implements BluetoothListener, BluetoothManagerable
 
     // 블루투스 스캔
     @Override
-    public void scanBluetooth() {
+    public void startBluetoothDeviceScan() {
         // 퍼미션이 체크 완료되었는가?
         checkPermission(new PermissionListener() {
             @Override
@@ -114,9 +114,15 @@ public class BluetoothManager implements BluetoothListener, BluetoothManagerable
     }
 
     @Override
-    public void connect(BluetoothDevice device) {
+    public void stopBluetoothDeviceScan() {
         // 스캔 중지
         bluetoothScanner.stopScanBluetoothDevice();
+    }
+
+    @Override
+    public void connect(BluetoothDevice device) {
+        // 스캔 중지
+        stopBluetoothDeviceScan();
         // 블루투스 접속
         bluetoothChatManager.connect(device);
     }

@@ -28,7 +28,7 @@ public class MainPresenterImpl implements MainPresenter {
     @Override
     public void searchBluetoothDevices() {
         RLog.e();
-        bluetoothManager.scanBluetooth();
+        bluetoothManager.startBluetoothDeviceScan();
     }
 
     // BT 설정 성공
