@@ -12,4 +12,6 @@ public interface BluetoothManagerable {
 
     // 블루투스 연결
     void connect(BluetoothDevice device);
+
+    void disConnect();
 }

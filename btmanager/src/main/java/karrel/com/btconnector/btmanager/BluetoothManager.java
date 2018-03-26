@@ -25,10 +25,10 @@ import rx.android.schedulers.AndroidSchedulers;
  * 블루투스 리스트 조회, 접속, 데이터 송/수신
  */
 
-public class BtManager implements BluetoothListener, BluetoothManagerable {
+public class BluetoothManager implements BluetoothListener, BluetoothManagerable {
 
     // 싱글턴
-    private static BtManager bluetoothManager;
+    private static BluetoothManager bluetoothManager;
 
     // 퍼미션 체커
     private PermissionCheckable permissionChecker;
@@ -46,18 +46,18 @@ public class BtManager implements BluetoothListener, BluetoothManagerable {
     private BluetoothListener bluetoothCallback;
 
     // 채팅 매니저
-    private BluetoothChatManager chatManager = BluetoothChatManager.getInstance();
+    private BluetoothChatManager bluetoothChatManager = BluetoothChatManager.getInstance();
 
     // 싱글턴
-    public static BtManager getInstance(Context context, BluetoothListener listener) {
+    public static BluetoothManager getInstance(Context context, BluetoothListener listener) {
         if (bluetoothManager == null) {
-            bluetoothManager = new BtManager(context, listener);
+            bluetoothManager = new BluetoothManager(context, listener);
         }
         return bluetoothManager;
     }
 
     // 생성자
-    public BtManager(Context context, BluetoothListener listener) {
+    public BluetoothManager(Context context, BluetoothListener listener) {
         bluetoothCallback = listener;
 
         // 퍼미션 체커
@@ -65,7 +65,7 @@ public class BtManager implements BluetoothListener, BluetoothManagerable {
         // 디바이스 스캐너
         bluetoothScanner = new LeBluetoothSanner(btScannerListener);
         // 채팅 매니저 콜백
-        chatManager.setListener(chatCallback);
+        bluetoothChatManager.setListener(bluetoothChatCallback);
     }
 
     // 권한이 거부됨
@@ -119,7 +119,12 @@ public class BtManager implements BluetoothListener, BluetoothManagerable {
         // 스캔 중지
         bluetoothScanner.stopScanBluetoothDevice();
         // 블루투스 접속
-        chatManager.connect(device);
+        bluetoothChatManager.connect(device);
+    }
+
+    @Override
+    public void disConnect() {
+        if (bluetoothChatManager.isConnected()) bluetoothChatManager.disConnect();
     }
 
     // 퍼미션 체크
@@ -139,17 +144,17 @@ public class BtManager implements BluetoothListener, BluetoothManagerable {
         @Override
         public void requireEnableBt() {
             // 블루투스 이용가능 설정이 필요합니다.
-            BtManager.this.requireEnableBt();
+            BluetoothManager.this.requireEnableBt();
         }
 
         @Override
         public void onSearchedDevice(BluetoothDevice device) {
-            BtManager.this.onSearchedDevice(device);
+            BluetoothManager.this.onSearchedDevice(device);
         }
     };
 
     // 채팅 매니저
-    private final BluetoothChatListener chatCallback = new BluetoothChatListener() {
+    private final BluetoothChatListener bluetoothChatCallback = new BluetoothChatListener() {
         @Override
         public void onConnected(String deviceName) {
             RLog.d();
@@ -161,7 +166,7 @@ public class BtManager implements BluetoothListener, BluetoothManagerable {
         }
 
         @Override
-        public void onConnectFailed(String deviceName) {
+        public void onInitalized(String deviceName) {
             RLog.d();
         }
 

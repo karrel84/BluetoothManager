@@ -9,7 +9,7 @@ public interface BluetoothChatListener {
 
     void onConnecting(String deviceName);
 
-    void onConnectFailed(String deviceName);
+    void onInitalized(String deviceName);
 
     void onMessageSend(byte[] writeBuf);
 

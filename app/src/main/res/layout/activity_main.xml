@@ -16,5 +16,21 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <Button
+            android:id="@+id/connect"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="connect"
+            app:layout_constraintLeft_toRightOf="@+id/search"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:id="@+id/deconnect"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="deconnect"
+            app:layout_constraintLeft_toRightOf="@+id/connect"
+            app:layout_constraintTop_toTopOf="parent" />
+
     </android.support.constraint.ConstraintLayout>
 </layout>

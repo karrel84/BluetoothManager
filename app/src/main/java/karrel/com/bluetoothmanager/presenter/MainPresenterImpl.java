@@ -6,7 +6,7 @@ import android.content.Context;
 import com.karrel.mylibrary.RLog;
 
 import karrel.com.btconnector.btmanager.BluetoothListener;
-import karrel.com.btconnector.btmanager.BtManager;
+import karrel.com.btconnector.btmanager.BluetoothManager;
 import karrel.com.btconnector.btmanager.BluetoothManagerable;
 
 /**
@@ -16,15 +16,17 @@ import karrel.com.btconnector.btmanager.BluetoothManagerable;
 public class MainPresenterImpl implements MainPresenter {
     private MainPresenter.View view;
     private BluetoothManagerable bluetoothManager;
+    // 블루투스 기기
+    private BluetoothDevice bluetoothDevice;
 
     public MainPresenterImpl(MainPresenter.View view, Context context) {
         this.view = view;
 
-        bluetoothManager = BtManager.getInstance(context, btListener);
+        bluetoothManager = BluetoothManager.getInstance(context, btListener);
     }
 
     @Override
-    public void searchBt() {
+    public void searchBluetoothDevices() {
         RLog.e();
         bluetoothManager.scanBluetooth();
     }
@@ -33,13 +35,25 @@ public class MainPresenterImpl implements MainPresenter {
     @Override
     public void enabledBluetooth() {
         // 블루투스 탐색 시작
-        searchBt();
+        searchBluetoothDevices();
     }
 
     @Override
     public void dissableBluetooth() {
         // BT 설정 실패
         RLog.e();
+    }
+
+    @Override
+    public void connectBluetooth() {
+        RLog.e();
+        if (bluetoothDevice == null) return;
+        bluetoothManager.connect(bluetoothDevice);
+    }
+
+    @Override
+    public void deconnectBluetooth() {
+        bluetoothManager.disConnect();
     }
 
     private final BluetoothListener btListener = new BluetoothListener() {
@@ -60,7 +74,7 @@ public class MainPresenterImpl implements MainPresenter {
 
             String name = device.getName();
             if (name.equals("MASSAGE")) {
-                bluetoothManager.connect(device);
+                bluetoothDevice = device;
             }
         }
     };

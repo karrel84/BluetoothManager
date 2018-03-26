@@ -29,7 +29,9 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
 
     // 버튼 이벤트
     private void setupButtonEvents() {
-        binding.search.setOnClickListener(v -> presenter.searchBt());
+        binding.search.setOnClickListener(v -> presenter.searchBluetoothDevices());
+        binding.connect.setOnClickListener(v -> presenter.connectBluetooth());
+        binding.deconnect.setOnClickListener(v -> presenter.deconnectBluetooth());
     }
 
     @Override

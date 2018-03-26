@@ -5,11 +5,15 @@ package karrel.com.bluetoothmanager.presenter;
  */
 
 public interface MainPresenter {
-    void searchBt();
+    void searchBluetoothDevices();
 
     void enabledBluetooth();
 
     void dissableBluetooth();
+
+    void connectBluetooth();
+
+    void deconnectBluetooth();
 
     interface View {
 

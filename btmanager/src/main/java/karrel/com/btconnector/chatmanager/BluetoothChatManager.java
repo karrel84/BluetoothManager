@@ -8,9 +8,6 @@ import com.karrel.mylibrary.RLog;
 
 import karrel.com.btconnector.BluetoothService;
 import karrel.com.btconnector.Constants;
-import rx.Observable;
-import rx.Observer;
-import rx.functions.Action0;
 
 /**
  * Created by Rell on 2018. 1. 29..
@@ -49,7 +46,7 @@ public class BluetoothChatManager {
         this.bluetoothDevice = bluetoothDevice;
 
         // 접속 해제
-        unConnect();
+        disConnect();
 
         bluetoothHandler = new BluetoothHandler();
         // 접속시도
@@ -96,8 +93,8 @@ public class BluetoothChatManager {
                             break;
                         case BluetoothService.STATE_LISTEN:
                         case BluetoothService.STATE_NONE:
-                            RLog.d("onConnectFailed");
-                            bluetoothChatListener.onConnectFailed(bluetoothDevice.getName());
+                            RLog.d("onInitalized");
+                            bluetoothChatListener.onInitalized(bluetoothDevice.getName());
 
                             break;
                     }
@@ -125,7 +122,7 @@ public class BluetoothChatManager {
     }
 
     // 접속해제
-    public void unConnect() {
+    public void disConnect() {
         if (bluetoothService != null) {
             bluetoothService.stop();
         }
