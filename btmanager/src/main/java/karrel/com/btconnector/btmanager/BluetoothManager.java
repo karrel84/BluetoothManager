@@ -8,6 +8,7 @@ import com.gun0912.tedpermission.PermissionListener;
 import com.karrel.mylibrary.RLog;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import karrel.com.btconnector.btscanner.BluetoothScannable;
 import karrel.com.btconnector.btscanner.BluetoothScanner;
@@ -42,22 +43,21 @@ public class BluetoothManager implements BluetoothListener, BluetoothManagerable
             Manifest.permission.ACCESS_COARSE_LOCATION};
 
     // 블루투스 콜백
-    private BluetoothListener bluetoothCallback;
+    private List<BluetoothListener> bluetoothListeners = new ArrayList<>();
 
     // 채팅 매니저
     private BluetoothChatManager bluetoothChatManager = BluetoothChatManager.getInstance();
 
     // 싱글턴
-    public static BluetoothManager getInstance(Context context, BluetoothListener listener) {
+    public static BluetoothManager getInstance(Context context) {
         if (bluetoothManager == null) {
-            bluetoothManager = new BluetoothManager(context, listener);
+            bluetoothManager = new BluetoothManager(context);
         }
         return bluetoothManager;
     }
 
     // 생성자
-    public BluetoothManager(Context context, BluetoothListener listener) {
-        bluetoothCallback = listener;
+    public BluetoothManager(Context context) {
 
         // 퍼미션 체커
         permissionChecker = new PermissionChecker(context);
@@ -67,13 +67,25 @@ public class BluetoothManager implements BluetoothListener, BluetoothManagerable
         bluetoothChatManager.setListener(this);
     }
 
+    public void addBluetoothCallback(BluetoothListener bluetoothListener) {
+        bluetoothListeners.add(bluetoothListener);
+    }
+
+    public void removeBluetoothCallback(BluetoothListener bluetoothListener) {
+        bluetoothListeners.remove(bluetoothListener);
+    }
+
     // 권한이 거부됨
     @Override
     public void deniedPermission() {
         RLog.d();
         Observable.just("")
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(s -> bluetoothCallback.deniedPermission(), e -> e.printStackTrace());
+                .subscribe(s -> {
+                    for (BluetoothListener listener : bluetoothListeners) {
+                        listener.deniedPermission();
+                    }
+                }, e -> e.printStackTrace());
     }
 
     // 블루투스 활성화 요청
@@ -82,7 +94,11 @@ public class BluetoothManager implements BluetoothListener, BluetoothManagerable
         RLog.d();
         Observable.just("")
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(s -> bluetoothCallback.requireEnableBt(), e -> e.printStackTrace());
+                .subscribe(s -> {
+                    for (BluetoothListener listener : bluetoothListeners) {
+                        listener.requireEnableBt();
+                    }
+                }, e -> e.printStackTrace());
 
     }
 
@@ -90,9 +106,91 @@ public class BluetoothManager implements BluetoothListener, BluetoothManagerable
     public void onSearchedDevice(BluetoothDevice device) {
         Observable.just(device)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(bluetoothCallback::onSearchedDevice, e -> e.printStackTrace());
+                .subscribe(d -> {
+                    for (BluetoothListener listener : bluetoothListeners) {
+                        listener.onSearchedDevice(d);
+                    }
+                }, e -> e.printStackTrace());
     }
 
+
+    @Override
+    public void onConnectedSuccess(String deviceName) {
+        Observable.just(deviceName)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(d -> {
+                    for (BluetoothListener listener : bluetoothListeners) {
+                        listener.onConnectedSuccess(d);
+                    }
+                }, e -> e.printStackTrace());
+    }
+
+    @Override
+    public void onConnecting(String deviceName) {
+        Observable.just(deviceName)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(d -> {
+                    for (BluetoothListener listener : bluetoothListeners) {
+                        listener.onConnecting(d);
+                    }
+                }, e -> e.printStackTrace());
+    }
+
+    @Override
+    public void onInitalized(String deviceName) {
+        Observable.just(deviceName)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(d -> {
+                    for (BluetoothListener listener : bluetoothListeners) {
+                        listener.onInitalized(d);
+                    }
+                }, e -> e.printStackTrace());
+    }
+
+    @Override
+    public void onMessageSend(byte[] writeBuf) {
+        Observable.just(writeBuf)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(d -> {
+                    for (BluetoothListener listener : bluetoothListeners) {
+                        listener.onMessageSend(d);
+                    }
+                }, e -> e.printStackTrace());
+    }
+
+    @Override
+    public void onReadMessage(byte[] readBuf) {
+        Observable.just(readBuf)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(d -> {
+                    for (BluetoothListener listener : bluetoothListeners) {
+                        listener.onReadMessage(d);
+                    }
+                }, e -> e.printStackTrace());
+    }
+
+    @Override
+    public void onStartConnect(String deviceName) {
+        Observable.just(deviceName)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(d -> {
+                    for (BluetoothListener listener : bluetoothListeners) {
+                        listener.onStartConnect(d);
+                    }
+                }, e -> e.printStackTrace());
+    }
+
+    @Override
+    public void onConnectedFail(String name) {
+        Observable.just(name)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(d -> {
+                    for (BluetoothListener listener : bluetoothListeners) {
+                        listener.onConnectedFail(d);
+                    }
+                }, e -> e.printStackTrace());
+
+    }
 
     // 블루투스 스캔
     @Override
@@ -157,55 +255,6 @@ public class BluetoothManager implements BluetoothListener, BluetoothManagerable
             BluetoothManager.this.onSearchedDevice(device);
         }
     };
-
-    @Override
-    public void onConnectedSuccess(String deviceName) {
-        Observable.just(deviceName)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(d -> bluetoothCallback.onConnectedSuccess(d), e -> e.printStackTrace());
-    }
-
-    @Override
-    public void onConnecting(String deviceName) {
-        Observable.just(deviceName)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(d -> bluetoothCallback.onConnecting(d), e -> e.printStackTrace());
-    }
-
-    @Override
-    public void onInitalized(String deviceName) {
-        Observable.just(deviceName)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(d -> bluetoothCallback.onInitalized(d), e -> e.printStackTrace());
-    }
-
-    @Override
-    public void onMessageSend(byte[] writeBuf) {
-        Observable.just(writeBuf)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(d -> bluetoothCallback.onMessageSend(d), e -> e.printStackTrace());
-    }
-
-    @Override
-    public void onReadMessage(byte[] readBuf) {
-        Observable.just(readBuf)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(d -> bluetoothCallback.onReadMessage(d), e -> e.printStackTrace());
-    }
-
-    @Override
-    public void onStartConnect(String deviceName) {
-        Observable.just(deviceName)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(d -> bluetoothCallback.onStartConnect(d), e -> e.printStackTrace());
-    }
-
-    @Override
-    public void onConnectedFail(String name) {
-        Observable.just(name)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(d -> bluetoothCallback.onConnectedFail(d), e -> e.printStackTrace());
-    }
 
     @Override
     public boolean isConnected() {

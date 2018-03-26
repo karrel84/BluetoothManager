@@ -15,14 +15,15 @@ import karrel.com.btconnector.btmanager.BluetoothManagerable;
 
 public class MainPresenterImpl implements MainPresenter {
     private MainPresenter.View view;
-    private BluetoothManagerable bluetoothManager;
+    private BluetoothManager bluetoothManager;
     // 블루투스 기기
     private BluetoothDevice bluetoothDevice;
 
     public MainPresenterImpl(MainPresenter.View view, Context context) {
         this.view = view;
 
-        bluetoothManager = BluetoothManager.getInstance(context, bluetoothListener);
+        bluetoothManager = BluetoothManager.getInstance(context);
+        bluetoothManager.addBluetoothCallback(bluetoothListener);
     }
 
     @Override
