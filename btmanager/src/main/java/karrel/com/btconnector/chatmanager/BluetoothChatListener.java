@@ -4,7 +4,7 @@ package karrel.com.btconnector.chatmanager;
  * Created by Rell on 2018. 1. 29..
  */
 
-public interface BtChatListener {
+public interface BluetoothChatListener {
     void onConnected(String deviceName);
 
     void onConnecting(String deviceName);
@@ -16,6 +16,4 @@ public interface BtChatListener {
     void onReadMessage(byte[] readBuf);
 
     void onStartConnect(String deviceName);
-
-    void onRetry(String deviceName, int cnt);
 }

@@ -6,7 +6,7 @@ import android.bluetooth.BluetoothDevice;
  * Created by Rell on 2018. 3. 23..
  */
 
-public interface BtManagerable {
+public interface BluetoothManagerable {
     // 블루투스 스캔
     void scanBluetooth();
 

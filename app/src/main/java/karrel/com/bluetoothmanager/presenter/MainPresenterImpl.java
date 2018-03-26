@@ -5,9 +5,9 @@ import android.content.Context;
 
 import com.karrel.mylibrary.RLog;
 
-import karrel.com.btconnector.btmanager.BtListener;
+import karrel.com.btconnector.btmanager.BluetoothListener;
 import karrel.com.btconnector.btmanager.BtManager;
-import karrel.com.btconnector.btmanager.BtManagerable;
+import karrel.com.btconnector.btmanager.BluetoothManagerable;
 
 /**
  * Created by Rell on 2018. 3. 23..
@@ -15,7 +15,7 @@ import karrel.com.btconnector.btmanager.BtManagerable;
 
 public class MainPresenterImpl implements MainPresenter {
     private MainPresenter.View view;
-    private BtManagerable bluetoothManager;
+    private BluetoothManagerable bluetoothManager;
 
     public MainPresenterImpl(MainPresenter.View view, Context context) {
         this.view = view;
@@ -42,7 +42,7 @@ public class MainPresenterImpl implements MainPresenter {
         RLog.e();
     }
 
-    private final BtListener btListener = new BtListener() {
+    private final BluetoothListener btListener = new BluetoothListener() {
         @Override
         public void deniedPermission() {
             RLog.e();

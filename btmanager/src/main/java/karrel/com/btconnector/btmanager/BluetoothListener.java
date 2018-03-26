@@ -6,7 +6,7 @@ import android.bluetooth.BluetoothDevice;
  * Created by Rell on 2018. 1. 29..
  */
 
-public interface BtListener {
+public interface BluetoothListener {
     // 권한이 거부됨
     void deniedPermission();
 

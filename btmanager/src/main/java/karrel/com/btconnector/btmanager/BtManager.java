@@ -9,11 +9,11 @@ import com.karrel.mylibrary.RLog;
 
 import java.util.ArrayList;
 
-import karrel.com.btconnector.btscanner.BtScanner;
-import karrel.com.btconnector.btscanner.BtScannerable;
-import karrel.com.btconnector.btscanner.LeBtSanner;
-import karrel.com.btconnector.chatmanager.BtChatListener;
-import karrel.com.btconnector.chatmanager.BtChatManager;
+import karrel.com.btconnector.btscanner.BluetoothScanner;
+import karrel.com.btconnector.btscanner.BluetoothScannable;
+import karrel.com.btconnector.btscanner.LeBluetoothSanner;
+import karrel.com.btconnector.chatmanager.BluetoothChatListener;
+import karrel.com.btconnector.chatmanager.BluetoothChatManager;
 import karrel.com.btconnector.permission.PermissionCheckable;
 import karrel.com.btconnector.permission.PermissionChecker;
 import rx.Observable;
@@ -25,45 +25,45 @@ import rx.android.schedulers.AndroidSchedulers;
  * 블루투스 리스트 조회, 접속, 데이터 송/수신
  */
 
-public class BtManager implements BtListener, BtManagerable {
+public class BtManager implements BluetoothListener, BluetoothManagerable {
 
     // 싱글턴
-    private static BtManager mBtManager;
+    private static BtManager bluetoothManager;
 
     // 퍼미션 체커
     private PermissionCheckable permissionChecker;
 
     // 블루투스 스캐너
-    private BtScannerable btScanner;
+    private BluetoothScannable bluetoothScanner;
 
     // 체크해야할 권한
-    private String[] permissions = {
+    private String[] bluetoothPermissions = {
             Manifest.permission.BLUETOOTH,
             Manifest.permission.BLUETOOTH_ADMIN,
             Manifest.permission.ACCESS_COARSE_LOCATION};
 
     // 블루투스 콜백
-    private BtListener callback;
+    private BluetoothListener bluetoothCallback;
 
     // 채팅 매니저
-    private BtChatManager chatManager = BtChatManager.getInstance();
+    private BluetoothChatManager chatManager = BluetoothChatManager.getInstance();
 
     // 싱글턴
-    public static BtManager getInstance(Context context, BtListener listener) {
-        if (mBtManager == null) {
-            mBtManager = new BtManager(context, listener);
+    public static BtManager getInstance(Context context, BluetoothListener listener) {
+        if (bluetoothManager == null) {
+            bluetoothManager = new BtManager(context, listener);
         }
-        return mBtManager;
+        return bluetoothManager;
     }
 
     // 생성자
-    public BtManager(Context context, BtListener listener) {
-        callback = listener;
+    public BtManager(Context context, BluetoothListener listener) {
+        bluetoothCallback = listener;
 
         // 퍼미션 체커
         permissionChecker = new PermissionChecker(context);
         // 디바이스 스캐너
-        btScanner = new LeBtSanner(btScannerListener);
+        bluetoothScanner = new LeBluetoothSanner(btScannerListener);
         // 채팅 매니저 콜백
         chatManager.setListener(chatCallback);
     }
@@ -74,7 +74,7 @@ public class BtManager implements BtListener, BtManagerable {
         RLog.d();
         Observable.just("")
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(s -> callback.deniedPermission(), e -> e.printStackTrace());
+                .subscribe(s -> bluetoothCallback.deniedPermission(), e -> e.printStackTrace());
     }
 
     // 블루투스 활성화 요청
@@ -83,7 +83,7 @@ public class BtManager implements BtListener, BtManagerable {
         RLog.d();
         Observable.just("")
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(s -> callback.requireEnableBt(), e -> e.printStackTrace());
+                .subscribe(s -> bluetoothCallback.requireEnableBt(), e -> e.printStackTrace());
 
     }
 
@@ -91,7 +91,7 @@ public class BtManager implements BtListener, BtManagerable {
     public void onSearchedDevice(BluetoothDevice device) {
         Observable.just(device)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(callback::onSearchedDevice, e -> e.printStackTrace());
+                .subscribe(bluetoothCallback::onSearchedDevice, e -> e.printStackTrace());
     }
 
 
@@ -103,7 +103,7 @@ public class BtManager implements BtListener, BtManagerable {
             @Override
             public void onPermissionGranted() {
                 // 스캔 시작
-                startBtScan();
+                scanBluetoothDevice();
             }
 
             @Override
@@ -117,24 +117,25 @@ public class BtManager implements BtListener, BtManagerable {
     @Override
     public void connect(BluetoothDevice device) {
         // 스캔 중지
-        btScanner.stopScan();
+        bluetoothScanner.stopScanBluetoothDevice();
         // 블루투스 접속
         chatManager.connect(device);
     }
 
     // 퍼미션 체크
     private void checkPermission(PermissionListener listener) {
-        permissionChecker.checkPermission(permissions, listener);
+        permissionChecker.checkPermission(bluetoothPermissions, listener);
     }
 
     // 블루투스 스캔 시작
-    private void startBtScan() {
+    private void scanBluetoothDevice() {
+        RLog.d();
         // 블루투스 스캔 시작
-        btScanner.startBtScan();
+        bluetoothScanner.scanBluetoothDevice();
     }
 
     // 블루투스 스캐너 리스너
-    private final BtScanner.BluetoothScanListener btScannerListener = new BtScanner.BluetoothScanListener() {
+    private final BluetoothScanner.BluetoothScanListener btScannerListener = new BluetoothScanner.BluetoothScanListener() {
         @Override
         public void requireEnableBt() {
             // 블루투스 이용가능 설정이 필요합니다.
@@ -148,7 +149,7 @@ public class BtManager implements BtListener, BtManagerable {
     };
 
     // 채팅 매니저
-    private final BtChatListener chatCallback = new BtChatListener() {
+    private final BluetoothChatListener chatCallback = new BluetoothChatListener() {
         @Override
         public void onConnected(String deviceName) {
             RLog.d();
@@ -176,11 +177,6 @@ public class BtManager implements BtListener, BtManagerable {
 
         @Override
         public void onStartConnect(String deviceName) {
-            RLog.d();
-        }
-
-        @Override
-        public void onRetry(String deviceName, int cnt) {
             RLog.d();
         }
     };

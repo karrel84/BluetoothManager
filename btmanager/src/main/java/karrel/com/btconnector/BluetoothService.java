@@ -37,7 +37,7 @@ import java.util.UUID;
  * incoming connections, a thread for connecting with a device, and a
  * thread for performing data transmissions when connected.
  */
-public class BtService {
+public class BluetoothService {
     // Name for the SDP record when creating server socket
     private static final String NAME_SECURE = "BluetoothChatSecure";
     private static final String NAME_INSECURE = "BluetoothChatInsecure";
@@ -69,7 +69,7 @@ public class BtService {
      *
      * @param handler A Handler to send messages byte_box to the UI Activity
      */
-    public BtService(Handler handler) {
+    public BluetoothService(Handler handler) {
         mAdapter = BluetoothAdapter.getDefaultAdapter();
         setStatus(STATE_NONE);
         mNewState = mState;
@@ -267,7 +267,7 @@ public class BtService {
         updateUserInterfaceTitle();
 
         // Start the service over to restart listening mode
-        BtService.this.start();
+        BluetoothService.this.start();
     }
 
     /**
@@ -286,7 +286,7 @@ public class BtService {
         updateUserInterfaceTitle();
 
         // Start the service over to restart listening mode
-        BtService.this.start();
+        BluetoothService.this.start();
     }
 
     /**
@@ -339,7 +339,7 @@ public class BtService {
 
                 // If a connection was accepted
                 if (socket != null) {
-                    synchronized (BtService.this) {
+                    synchronized (BluetoothService.this) {
                         switch (mState) {
                             case STATE_LISTEN:
                             case STATE_CONNECTING:
@@ -432,7 +432,7 @@ public class BtService {
             }
 
             // Reset the ConnectThread because we're done
-            synchronized (BtService.this) {
+            synchronized (BluetoothService.this) {
                 mConnectThread = null;
             }
 
