@@ -206,4 +206,16 @@ public class BluetoothManager implements BluetoothListener, BluetoothManagerable
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(d -> bluetoothCallback.onConnectedFail(d), e -> e.printStackTrace());
     }
+
+    @Override
+    public boolean isConnected() {
+        // 연결되었나?
+        return bluetoothChatManager.isConnected();
+    }
+
+    @Override
+    public void sendData(byte[] bytes) {
+        // 데이터 송신
+        bluetoothChatManager.send(bytes);
+    }
 }

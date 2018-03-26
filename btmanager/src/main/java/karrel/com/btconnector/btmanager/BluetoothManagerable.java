@@ -16,5 +16,12 @@ public interface BluetoothManagerable {
     // 블루투스 연결
     void connect(BluetoothDevice device);
 
+    // 접속 해제
     void disConnect();
+
+    // 연결 여부 확인
+    boolean isConnected();
+
+    // 데이터 송신
+    void sendData(byte[] bytes);
 }
