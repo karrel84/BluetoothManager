@@ -22,7 +22,7 @@ public class MainPresenterImpl implements MainPresenter {
     public MainPresenterImpl(MainPresenter.View view, Context context) {
         this.view = view;
 
-        bluetoothManager = BluetoothManager.getInstance(context, btListener);
+        bluetoothManager = BluetoothManager.getInstance(context, bluetoothListener);
     }
 
     @Override
@@ -52,11 +52,46 @@ public class MainPresenterImpl implements MainPresenter {
     }
 
     @Override
-    public void deconnectBluetooth() {
+    public void disconnectBluetooth() {
         bluetoothManager.disConnect();
     }
 
-    private final BluetoothListener btListener = new BluetoothListener() {
+    private final BluetoothListener bluetoothListener = new BluetoothListener() {
+        @Override
+        public void onConnectedSuccess(String deviceName) {
+            RLog.e("deviceName : " + deviceName);
+        }
+
+        @Override
+        public void onConnecting(String deviceName) {
+            RLog.e("deviceName : " + deviceName);
+        }
+
+        @Override
+        public void onInitalized(String deviceName) {
+            RLog.e("deviceName : " + deviceName);
+        }
+
+        @Override
+        public void onMessageSend(byte[] writeBuf) {
+            RLog.e("writeBuf : " + writeBuf);
+        }
+
+        @Override
+        public void onReadMessage(byte[] readBuf) {
+            RLog.e("readBuf : " + readBuf);
+        }
+
+        @Override
+        public void onStartConnect(String deviceName) {
+            RLog.e("deviceName : " + deviceName);
+        }
+
+        @Override
+        public void onConnectedFail(String name) {
+            RLog.e("deviceName : " + name);
+        }
+
         @Override
         public void deniedPermission() {
             RLog.e();

@@ -13,7 +13,7 @@ public interface MainPresenter {
 
     void connectBluetooth();
 
-    void deconnectBluetooth();
+    void disconnectBluetooth();
 
     interface View {
 

@@ -25,10 +25,10 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <Button
-            android:id="@+id/deconnect"
+            android:id="@+id/disconnect"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="deconnect"
+            android:text="disconnect"
             app:layout_constraintLeft_toRightOf="@+id/connect"
             app:layout_constraintTop_toTopOf="parent" />
 

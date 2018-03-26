@@ -84,18 +84,19 @@ public class BluetoothChatManager {
                     mStatus = msg.arg1;
                     switch (msg.arg1) {
                         case BluetoothService.STATE_CONNECTED:
-                            RLog.d("onConnected");
-                            bluetoothChatListener.onConnected(bluetoothDevice.getName());
+                            RLog.d("onConnectedSuccess");
+                            bluetoothChatListener.onConnectedSuccess(bluetoothDevice.getName());
                             break;
                         case BluetoothService.STATE_CONNECTING:
                             RLog.d("onConnecting");
                             bluetoothChatListener.onConnecting(bluetoothDevice.getName());
                             break;
                         case BluetoothService.STATE_LISTEN:
-                        case BluetoothService.STATE_NONE:
-                            RLog.d("onInitalized");
                             bluetoothChatListener.onInitalized(bluetoothDevice.getName());
-
+                            break;
+                        case BluetoothService.STATE_NONE:
+                            RLog.d("onInitalized : " + mStatus);
+                            bluetoothChatListener.onConnectedFail(bluetoothDevice.getName());
                             break;
                     }
                     break;

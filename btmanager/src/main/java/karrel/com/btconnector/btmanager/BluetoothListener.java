@@ -2,11 +2,13 @@ package karrel.com.btconnector.btmanager;
 
 import android.bluetooth.BluetoothDevice;
 
+import karrel.com.btconnector.chatmanager.BluetoothChatListener;
+
 /**
  * Created by Rell on 2018. 1. 29..
  */
 
-public interface BluetoothListener {
+public interface BluetoothListener extends BluetoothChatListener {
     // 권한이 거부됨
     void deniedPermission();
 

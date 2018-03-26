@@ -5,7 +5,7 @@ package karrel.com.btconnector.chatmanager;
  */
 
 public interface BluetoothChatListener {
-    void onConnected(String deviceName);
+    void onConnectedSuccess(String deviceName);
 
     void onConnecting(String deviceName);
 
@@ -16,4 +16,6 @@ public interface BluetoothChatListener {
     void onReadMessage(byte[] readBuf);
 
     void onStartConnect(String deviceName);
+
+    void onConnectedFail(String name);
 }
