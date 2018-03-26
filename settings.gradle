@@ -1,1 +1,1 @@
-include ':app', ':rell_log', ':btmanager'
+include ':app', ':btmanager'

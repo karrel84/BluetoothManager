@@ -10,7 +10,6 @@
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/btmanager" />
-            <option value="$PROJECT_DIR$/rell_log" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />

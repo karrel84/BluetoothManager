@@ -35,9 +35,9 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
-    compile project(path: ':rell_log')
     compile 'gun0912.ted:tedpermission:2.0.0'
     compile 'io.reactivex:rxandroid:1.1.0'
+    compile 'com.github.karrel84:RellLog:1.0.5'
 }
 
 apply plugin: 'com.github.dcendents.android-maven'
