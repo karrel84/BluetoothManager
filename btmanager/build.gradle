@@ -39,3 +39,6 @@ dependencies {
     compile 'gun0912.ted:tedpermission:2.0.0'
     compile 'io.reactivex:rxandroid:1.1.0'
 }
+
+apply plugin: 'com.github.dcendents.android-maven'
+group='com.github.karrel84'
