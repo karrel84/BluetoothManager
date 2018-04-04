@@ -8,6 +8,7 @@ import com.karrel.mylibrary.RLog;
 import karrel.com.btconnector.btmanager.BluetoothListener;
 import karrel.com.btconnector.btmanager.BluetoothManager;
 import karrel.com.btconnector.btmanager.BluetoothManagerable;
+import karrel.com.btconnector.btscanner.DiscoveryScanner;
 
 /**
  * Created by Rell on 2018. 3. 23..
@@ -23,6 +24,7 @@ public class MainPresenterImpl implements MainPresenter {
         this.view = view;
 
         bluetoothManager = BluetoothManager.getInstance(context);
+        bluetoothManager.setScanner(BluetoothManager.Scanner.DISCOVERY);
         bluetoothManager.addBluetoothCallback(bluetoothListener);
     }
 
@@ -109,7 +111,7 @@ public class MainPresenterImpl implements MainPresenter {
             RLog.d("device : " + device.getName());
 
             String name = device.getName();
-            if (name.equals("MASSAGE")) {
+            if (name.equals("6910S")) {
                 bluetoothDevice = device;
             }
         }

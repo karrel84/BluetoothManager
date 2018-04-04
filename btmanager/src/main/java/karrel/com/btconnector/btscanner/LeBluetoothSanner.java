@@ -24,7 +24,7 @@ import rx.subjects.PublishSubject;
  */
 
 // LE 혹은 BLE의 블루투스 기기를 스캔한다
-public class LeBluetoothSanner extends BluetoothScanner {
+public class LeBluetoothSanner extends AbBluetoothScanner {
 
     // 블루투스 디바이스의 서브젝트
     private PublishSubject<BluetoothDevice> bluetoothDeviceMassanger;
@@ -51,7 +51,7 @@ public class LeBluetoothSanner extends BluetoothScanner {
     private void initBluetoothScanner() {
         // 롤리팝 이상버전에서는 LE scanner 를 초기화한다
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            bluetoothScanner = btAdapter.getBluetoothLeScanner();
+            bluetoothScanner = bluetoothAdapter.getBluetoothLeScanner();
         }
     }
 
@@ -82,7 +82,7 @@ public class LeBluetoothSanner extends BluetoothScanner {
 
                     @Override
                     public void onNext(BluetoothDevice device) {
-                        listener.onSearchedDevice(device);
+                        bluetoothScanListener.onSearchedDevice(device);
                     }
                 });
     }
@@ -109,7 +109,7 @@ public class LeBluetoothSanner extends BluetoothScanner {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             bluetoothScanner.startScan(bluetoothScannedCallback);
         } else {
-            btAdapter.startLeScan(bluetoothScannedCallbackLowVersion);
+            bluetoothAdapter.startLeScan(bluetoothScannedCallbackLowVersion);
         }
 
     }
@@ -134,7 +134,7 @@ public class LeBluetoothSanner extends BluetoothScanner {
             if (bluetoothScannedCallback != null) bluetoothScanner.stopScan(bluetoothScannedCallback);
             bluetoothScannedCallback = null;
         } else {
-            if (bluetoothScannedCallbackLowVersion != null) btAdapter.stopLeScan(bluetoothScannedCallbackLowVersion);
+            if (bluetoothScannedCallbackLowVersion != null) bluetoothAdapter.stopLeScan(bluetoothScannedCallbackLowVersion);
             bluetoothScannedCallbackLowVersion = null;
         }
     }

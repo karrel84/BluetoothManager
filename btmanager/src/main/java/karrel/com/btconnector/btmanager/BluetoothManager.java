@@ -11,7 +11,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import karrel.com.btconnector.btscanner.BluetoothScannable;
-import karrel.com.btconnector.btscanner.BluetoothScanner;
+import karrel.com.btconnector.btscanner.AbBluetoothScanner;
+import karrel.com.btconnector.btscanner.DiscoveryScanner;
 import karrel.com.btconnector.btscanner.LeBluetoothSanner;
 import karrel.com.btconnector.chatmanager.BluetoothChatManager;
 import karrel.com.btconnector.permission.PermissionCheckable;
@@ -26,6 +27,12 @@ import rx.android.schedulers.AndroidSchedulers;
  */
 
 public class BluetoothManager implements BluetoothListener, BluetoothManagerable {
+
+    private final Context context;
+
+    public enum Scanner {
+        DISCOVERY, BLE
+    }
 
     // 싱글턴
     private static BluetoothManager bluetoothManager;
@@ -58,6 +65,7 @@ public class BluetoothManager implements BluetoothListener, BluetoothManagerable
 
     // 생성자
     public BluetoothManager(Context context) {
+        this.context = context;
 
         // 퍼미션 체커
         permissionChecker = new PermissionChecker(context);
@@ -65,6 +73,17 @@ public class BluetoothManager implements BluetoothListener, BluetoothManagerable
         bluetoothScanner = new LeBluetoothSanner(btScannerListener);
         // 채팅 매니저 콜백
         bluetoothChatManager.setListener(this);
+    }
+
+    public void setScanner(Scanner discovery) {
+        switch (discovery) {
+            case DISCOVERY:
+                bluetoothScanner = new DiscoveryScanner(btScannerListener, context);
+                break;
+            case BLE:
+                bluetoothScanner = new LeBluetoothSanner(btScannerListener);
+                break;
+        }
     }
 
     public void addBluetoothCallback(BluetoothListener bluetoothListener) {
@@ -106,6 +125,7 @@ public class BluetoothManager implements BluetoothListener, BluetoothManagerable
     public void onSearchedDevice(BluetoothDevice device) {
         Observable.just(device)
                 .observeOn(AndroidSchedulers.mainThread())
+                .filter(d -> d.getName() != null)
                 .subscribe(d -> {
                     for (BluetoothListener listener : bluetoothListeners) {
                         listener.onSearchedDevice(d);
@@ -243,7 +263,7 @@ public class BluetoothManager implements BluetoothListener, BluetoothManagerable
     }
 
     // 블루투스 스캐너 리스너
-    private final BluetoothScanner.BluetoothScanListener btScannerListener = new BluetoothScanner.BluetoothScanListener() {
+    private final AbBluetoothScanner.BluetoothScanListener btScannerListener = new AbBluetoothScanner.BluetoothScanListener() {
         @Override
         public void requireEnableBt() {
             // 블루투스 이용가능 설정이 필요합니다.
