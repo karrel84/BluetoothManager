@@ -108,10 +108,15 @@ public class MainPresenterImpl implements MainPresenter {
 
         @Override
         public void onSearchedDevice(BluetoothDevice device) {
-            RLog.d("device : " + device.getName());
+            RLog.d(String.format("device : %s, address : %s", device.getName(), device.getAddress()));
 
-            String name = device.getName();
-            if (name.equals("6910S")) {
+            String name = "Phantom";
+            String address = "5C:B6:CC:04:15:66";
+//            String address = "4C:E1:73:B6:A8:1A"; // 아닌듯
+//            String address = "5C:B6:CC:04:18:1C"; // 아닌듯
+//            String address = "5C:B6:CC:03:A6:CC"; // 아닌듯
+            boolean isCollect = device.getName().equals(name) && device.getAddress().equals(address);
+            if (isCollect) {
                 bluetoothDevice = device;
             }
         }
