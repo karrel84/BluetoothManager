@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/BluetoothManager.iml" filepath="$PROJECT_DIR$/.idea/BluetoothManager.iml" />
+      <module fileurl="file://$PROJECT_DIR$/BluetoothManager2.iml" filepath="$PROJECT_DIR$/BluetoothManager2.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/btmanager/btmanager.iml" filepath="$PROJECT_DIR$/btmanager/btmanager.iml" />
     </modules>
