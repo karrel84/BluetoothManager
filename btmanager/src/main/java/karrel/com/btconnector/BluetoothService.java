@@ -485,7 +485,7 @@ public class BluetoothService {
             while (mState == STATE_CONNECTED) {
                 try {
                     // Read from the InputStream
-                    byte[] buffer = new byte[40];
+                    byte[] buffer = new byte[80];
                     bytes = inputStream.read(buffer);
 
                     byte[] fitBuffer = new byte[bytes];
