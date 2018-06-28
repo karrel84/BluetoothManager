@@ -108,6 +108,7 @@ public class BluetoothChatManager {
                     break;
                 case Constants.MESSAGE_READ:
                     byte[] readBuf = (byte[]) msg.obj;
+                    RLog.d("readBuf.length : " + readBuf.length);
                     bluetoothChatListener.onReadMessage(readBuf);
                     break;
                 case Constants.MESSAGE_DEVICE_NAME:

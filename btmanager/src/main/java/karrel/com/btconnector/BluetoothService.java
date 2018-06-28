@@ -455,7 +455,7 @@ public class BluetoothService {
      */
     private class ConnectedThread extends Thread {
         private final BluetoothSocket mmSocket;
-        private final InputStream mmInStream;
+        private final InputStream inputStream;
         private final OutputStream mmOutStream;
 
         public ConnectedThread(BluetoothSocket socket, String socketType) {
@@ -472,7 +472,7 @@ public class BluetoothService {
                 RLog.e("temp sockets not created" + e);
             }
 
-            mmInStream = tmpIn;
+            inputStream = tmpIn;
             mmOutStream = tmpOut;
             setStatus(STATE_CONNECTED);
         }
@@ -486,10 +486,12 @@ public class BluetoothService {
                 try {
                     // Read from the InputStream
                     byte[] buffer = new byte[40];
-                    bytes = mmInStream.read(buffer);
+                    bytes = inputStream.read(buffer);
 
-                    // Send the obtained bytes to the UI Activity
-                    mHandler.obtainMessage(Constants.MESSAGE_READ, bytes, -1, buffer).sendToTarget();
+                    byte[] fitBuffer = new byte[bytes];
+                    System.arraycopy(buffer, 0, fitBuffer, 0, bytes);
+
+                    mHandler.obtainMessage(Constants.MESSAGE_READ, bytes, -1, fitBuffer).sendToTarget();
                 } catch (IOException e) {
                     RLog.e("disconnected" + e);
                     connectionLost();
