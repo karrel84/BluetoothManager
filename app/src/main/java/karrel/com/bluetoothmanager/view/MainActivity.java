@@ -40,6 +40,16 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
         startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
     }
 
+    @Override
+    public void clearLog() {
+        binding.log.setText("");
+    }
+
+    @Override
+    public void addSearchedDevice(String text) {
+        binding.log.append(text + "\n");
+    }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

@@ -18,5 +18,9 @@ public interface MainPresenter {
     interface View {
 
         void requireEnableBt();
+
+        void clearLog();
+
+        void addSearchedDevice(String text);
     }
 }
