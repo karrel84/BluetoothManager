@@ -4,8 +4,6 @@ import android.bluetooth.BluetoothDevice;
 import android.os.Handler;
 import android.os.Message;
 
-import com.karrel.mylibrary.RLog;
-
 import karrel.com.btconnector.BluetoothService;
 import karrel.com.btconnector.Constants;
 
@@ -41,7 +39,6 @@ public class BluetoothChatManager {
     }
 
     public void connect(final BluetoothDevice bluetoothDevice) {
-        RLog.e("bluetooth name : " + bluetoothDevice.getName());
         // 접속할 기기 제거
         this.bluetoothDevice = bluetoothDevice;
 
@@ -84,40 +81,33 @@ public class BluetoothChatManager {
                     mStatus = msg.arg1;
                     switch (msg.arg1) {
                         case BluetoothService.STATE_CONNECTED:
-                            RLog.d("onConnectedSuccess");
                             bluetoothChatListener.onConnectedSuccess(bluetoothDevice.getName());
                             break;
                         case BluetoothService.STATE_CONNECTING:
-                            RLog.d("onConnecting");
                             bluetoothChatListener.onConnecting(bluetoothDevice.getName());
                             break;
                         case BluetoothService.STATE_LISTEN:
                             bluetoothChatListener.onInitalized(bluetoothDevice.getName());
                             break;
                         case BluetoothService.STATE_NONE:
-                            RLog.d("onInitalized : " + mStatus);
                             bluetoothChatListener.onConnectedFail(bluetoothDevice.getName());
                             break;
                     }
                     break;
                 case Constants.MESSAGE_SEND:
-                    RLog.d("onMessageSend");
                     byte[] writeBuf = (byte[]) msg.obj;
 
                     bluetoothChatListener.onMessageSend(writeBuf);
                     break;
                 case Constants.MESSAGE_READ:
                     byte[] readBuf = (byte[]) msg.obj;
-                    RLog.d("readBuf.length : " + readBuf.length);
                     bluetoothChatListener.onReadMessage(readBuf);
                     break;
                 case Constants.MESSAGE_DEVICE_NAME:
-                    RLog.d("onDeviceName");
 //                    mDeviceName = msg.getData().getString(Constants.DEVICE_NAME);
                     break;
                 case Constants.MESSAGE_TOAST:
                     final String toast = msg.getData().getString(Constants.TOAST);
-                    RLog.d(toast);
                     break;
             }
         }
