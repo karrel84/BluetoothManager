@@ -81,16 +81,20 @@ public class BluetoothChatManager {
                     mStatus = msg.arg1;
                     switch (msg.arg1) {
                         case BluetoothService.STATE_CONNECTED:
-                            bluetoothChatListener.onConnectedSuccess(bluetoothDevice.getName());
+                            if (bluetoothDevice.getName() != null)
+                                bluetoothChatListener.onConnectedSuccess(bluetoothDevice.getName());
                             break;
                         case BluetoothService.STATE_CONNECTING:
-                            bluetoothChatListener.onConnecting(bluetoothDevice.getName());
+                            if (bluetoothDevice.getName() != null)
+                                bluetoothChatListener.onConnecting(bluetoothDevice.getName());
                             break;
                         case BluetoothService.STATE_LISTEN:
-                            bluetoothChatListener.onInitalized(bluetoothDevice.getName());
+                            if (bluetoothDevice.getName() != null)
+                                bluetoothChatListener.onInitalized(bluetoothDevice.getName());
                             break;
                         case BluetoothService.STATE_NONE:
-                            bluetoothChatListener.onConnectedFail(bluetoothDevice.getName());
+                            if (bluetoothDevice.getName() != null)
+                                bluetoothChatListener.onConnectedFail(bluetoothDevice.getName());
                             break;
                     }
                     break;
