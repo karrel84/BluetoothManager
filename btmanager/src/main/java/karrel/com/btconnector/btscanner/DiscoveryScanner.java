@@ -6,8 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 
-import com.karrel.mylibrary.RLog;
-
 /**
  * Created by jylee on 2018. 4. 4..
  */

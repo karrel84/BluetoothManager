@@ -24,11 +24,7 @@ public interface Constants {
     int MESSAGE_STATE_CHANGE = 1;
     int MESSAGE_READ = 2;
     int MESSAGE_SEND = 3;
-    int MESSAGE_DEVICE_NAME = 4;
-    int MESSAGE_TOAST = 5;
-
-    // Key names received from the BluetoothChatServiceOld Handler
-    String DEVICE_NAME = "device_name";
-    String TOAST = "toast";
+    int MESSAGE_CONNECTION_FAILED = 6;
+    int MESSAGE_CONNECTION_LOSTED = 7;
 
 }

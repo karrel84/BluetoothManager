@@ -9,15 +9,13 @@ import android.bluetooth.le.ScanResult;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 
-import com.karrel.mylibrary.RLog;
-
 import java.util.List;
 
-import rx.Observer;
-import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
-import rx.subjects.PublishSubject;
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
+import io.reactivex.subjects.PublishSubject;
 
 /**
  * Created by Rell on 2018. 3. 23..
@@ -30,7 +28,7 @@ public class LeBluetoothSanner extends AbBluetoothScanner {
     private PublishSubject<BluetoothDevice> bluetoothDeviceMassanger;
 
     // 블루투스 기기 서브젝트
-    private Subscription subscriptionBluetoothDevices;
+    private Disposable deviceDisposable;
 
     // 블루투스 LE 스캐너 5.0 이상 버전에서 사용된다
     private BluetoothLeScanner bluetoothScanner;
@@ -63,21 +61,26 @@ public class LeBluetoothSanner extends AbBluetoothScanner {
         // 블루투스 객체를 전달하는 섭스크립션을 클리어
         clearDeviceSubscription();
 
-        subscriptionBluetoothDevices = bluetoothDeviceMassanger
-                .onBackpressureDrop() // 백프레져는 버린다
+        bluetoothDeviceMassanger
                 .filter(d -> d.getName() != null) // 기기의 이름이 없으면 버린다
                 .distinct() // 중복되는 기기명은 버린다
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<BluetoothDevice>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
 
                     @Override
                     public void onError(Throwable e) {
                         e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+
+                    @Override
+                    public void onSubscribe(Disposable d) {
+                        deviceDisposable = d;
                     }
 
                     @Override
@@ -89,17 +92,15 @@ public class LeBluetoothSanner extends AbBluetoothScanner {
 
     // 블루투스 객체를 전달하는 섭스크립션을 클리어
     private void clearDeviceSubscription() {
-        RLog.d();
-        if (subscriptionBluetoothDevices != null) {
-            subscriptionBluetoothDevices.unsubscribe();
-            subscriptionBluetoothDevices = null;
+        if (deviceDisposable != null) {
+            deviceDisposable.dispose();
+            deviceDisposable = null;
         }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
     @Override
     public void startScanBluetoothDevice() {
-        RLog.d();
         // 콜백을 초기화한다
         initScanedDeviceCallback();
         // 섭스크립셔 초기화
@@ -128,13 +129,14 @@ public class LeBluetoothSanner extends AbBluetoothScanner {
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
     @Override
     public void stopScanBluetoothDevice() {
-        RLog.d();
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            if (bluetoothScannedCallback != null) bluetoothScanner.stopScan(bluetoothScannedCallback);
+            if (bluetoothScannedCallback != null)
+                bluetoothScanner.stopScan(bluetoothScannedCallback);
             bluetoothScannedCallback = null;
         } else {
-            if (bluetoothScannedCallbackLowVersion != null) bluetoothAdapter.stopLeScan(bluetoothScannedCallbackLowVersion);
+            if (bluetoothScannedCallbackLowVersion != null)
+                bluetoothAdapter.stopLeScan(bluetoothScannedCallbackLowVersion);
             bluetoothScannedCallbackLowVersion = null;
         }
     }
@@ -168,13 +170,12 @@ public class LeBluetoothSanner extends AbBluetoothScanner {
 
         @Override
         public void onScanFailed(int errorCode) {
-            RLog.e("errorCode : " + errorCode);
+
         }
 
         private void processResult(final ScanResult result) {
             try {
                 BluetoothDevice device = result.getDevice();
-//                RLog.d(String.format("name : %s ", device.getName()) + device.toString());
                 bluetoothDeviceMassanger.onNext(device);
             } catch (Exception e) {
                 e.printStackTrace();
