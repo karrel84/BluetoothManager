@@ -31,7 +31,6 @@ class BluetoothChatManager {
 
     fun connect(bluetoothDevice: BluetoothDevice) {
 
-        println("bluetoothDevice : ${bluetoothDevice.name}")
         connectDeviceName = bluetoothDevice.name
 
         // 접속 해제
@@ -67,8 +66,6 @@ class BluetoothChatManager {
         override fun handleMessage(msg: Message) {
             if (bluetoothChatListener == null) return
 
-            println("handleMessage > msg.what : " + msg.what)
-
             when (msg.what) {
                 Constants.MESSAGE_STATE_CHANGE -> {
                     mStatus = msg.arg1
@@ -97,10 +94,6 @@ class BluetoothChatManager {
 
             }
         }
-    }
-
-    private fun println(str: String) {
-        System.out.println("BluetoothChatManager > $str")
     }
 
     // 접속해제
