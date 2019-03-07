@@ -2,6 +2,7 @@ package karrel.com.bluetoothmanager.presenter
 
 import android.bluetooth.BluetoothDevice
 import android.content.Context
+import karrel.com.bluetoothmanager.util.ByteConverter
 import karrel.com.btconnector.btmanager.BluetoothListener
 import karrel.com.btconnector.btmanager.BluetoothManager
 
@@ -12,7 +13,6 @@ import karrel.com.btconnector.btmanager.BluetoothManager
 class MainPresenterImpl(private val view: MainPresenter.View, context: Context) : MainPresenter {
     private val bluetoothManager: BluetoothManager = BluetoothManager.getInstance(context)
     // 블루투스 기기
-    private var bluetoothDevice: BluetoothDevice? = null
 
     private val bluetoothListener = object : BluetoothListener {
         override fun onFailedConnect(deviceName: String?) {
@@ -40,7 +40,7 @@ class MainPresenterImpl(private val view: MainPresenter.View, context: Context) 
         }
 
         override fun onReadMessage(readBuf: ByteArray?) {
-            println("onReadMessage()")
+            println("onReadMessage(${ByteConverter.byteToHex(readBuf)})")
         }
 
         override fun onStartConnect(deviceName: String?) {
@@ -65,15 +65,8 @@ class MainPresenterImpl(private val view: MainPresenter.View, context: Context) 
             val text = "device : ${device?.name}, address : ${device?.address}, bondState : ${device?.bondState}"
             println("onSearchedDevice : $text")
 
-            view.addSearchedDevice(text)
+            view.addSearchedDevice(device)
 
-            val name = "ventars"
-
-            val isCollect = device?.name?.toUpperCase() == name.toUpperCase()
-            if (isCollect) {
-                println("collected device : ${device?.name}")
-                bluetoothDevice = device
-            }
         }
     }
 
@@ -98,9 +91,8 @@ class MainPresenterImpl(private val view: MainPresenter.View, context: Context) 
         // BT 설정 실패
     }
 
-    override fun connectBluetooth() {
-        if (bluetoothDevice == null) return
-        bluetoothManager.connect(bluetoothDevice!!)
+    override fun connectBluetooth(data: BluetoothDevice) {
+        bluetoothManager.connect(data)
     }
 
     override fun disconnectBluetooth() {

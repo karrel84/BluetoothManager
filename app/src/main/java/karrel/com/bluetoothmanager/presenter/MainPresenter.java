@@ -1,5 +1,9 @@
 package karrel.com.bluetoothmanager.presenter;
 
+import android.bluetooth.BluetoothDevice;
+
+import org.jetbrains.annotations.Nullable;
+
 /**
  * Created by Rell on 2018. 3. 23..
  */
@@ -11,7 +15,7 @@ public interface MainPresenter {
 
     void dissableBluetooth();
 
-    void connectBluetooth();
+    void connectBluetooth(BluetoothDevice data);
 
     void disconnectBluetooth();
 
@@ -21,6 +25,6 @@ public interface MainPresenter {
 
         void clearLog();
 
-        void addSearchedDevice(String text);
+        void addSearchedDevice(@Nullable BluetoothDevice device);
     }
 }
