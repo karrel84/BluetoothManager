@@ -27,9 +27,23 @@ class MainActivity : AppCompatActivity(), MainPresenter.View {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         presenter = MainPresenterImpl(this, this)
-
         setupRecyclerView()
         setupButtonEvents()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        presenter.onResume()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        presenter.onStop()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        presenter.onDestroy()
     }
 
     private fun setupRecyclerView() {
@@ -102,7 +116,7 @@ class MainActivity : AppCompatActivity(), MainPresenter.View {
                 }
 
             init {
-                itemView.setOnClickListener { presenter.connectBluetooth(data) }
+                itemView.setOnClickListener { data?.let { it1 -> presenter.connectBluetooth(it1) } }
             }
 
             private fun updateUI(device: BluetoothDevice?) {

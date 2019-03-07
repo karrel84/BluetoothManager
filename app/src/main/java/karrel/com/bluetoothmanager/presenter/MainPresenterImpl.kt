@@ -11,6 +11,7 @@ import karrel.com.btconnector.btmanager.BluetoothManager
  */
 
 class MainPresenterImpl(private val view: MainPresenter.View, context: Context) : MainPresenter {
+
     private val bluetoothManager: BluetoothManager = BluetoothManager.getInstance(context)
     // 블루투스 기기
 
@@ -74,6 +75,17 @@ class MainPresenterImpl(private val view: MainPresenter.View, context: Context) 
 
         bluetoothManager.setScanner(BluetoothManager.Scanner.DISCOVERY)
         bluetoothManager.addBluetoothCallback(bluetoothListener)
+    }
+
+
+    override fun onResume() {
+    }
+
+    override fun onStop() {
+        bluetoothManager.stopBluetoothDeviceScan()
+    }
+
+    override fun onDestroy() {
     }
 
     override fun searchBluetoothDevices() {
