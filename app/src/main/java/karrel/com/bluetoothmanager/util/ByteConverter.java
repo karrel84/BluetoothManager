@@ -10,6 +10,7 @@ import java.io.UnsupportedEncodingException;
 
 public class ByteConverter {
 
+    
     @SuppressLint("DefaultLocale")
     public static String byteToHex(byte[] b) {
         StringBuffer sb = new StringBuffer(b.length * 2);
