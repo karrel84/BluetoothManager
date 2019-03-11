@@ -3,14 +3,12 @@ package karrel.com.btconnector.btmanager
 import android.Manifest
 import android.bluetooth.BluetoothDevice
 import android.content.Context
-import com.gun0912.tedpermission.PermissionListener
+import android.support.annotation.RequiresPermission
 import karrel.com.btconnector.btscanner.AbBluetoothScanner
 import karrel.com.btconnector.btscanner.BluetoothScannable
 import karrel.com.btconnector.btscanner.DiscoveryScanner
 import karrel.com.btconnector.btscanner.LeBluetoothSanner
 import karrel.com.btconnector.chatmanager.BluetoothChatManager
-import karrel.com.btconnector.permission.PermissionCheckable
-import karrel.com.btconnector.permission.PermissionChecker
 import java.util.*
 
 /**
@@ -22,14 +20,9 @@ import java.util.*
 
 class BluetoothManager(private val context: Context) : BluetoothListener, BluetoothManagerable {
 
-    // 퍼미션 체커
-    private val permissionChecker: PermissionCheckable
 
     // 블루투스 스캐너
     private var bluetoothScanner: BluetoothScannable? = null
-
-    // 체크해야할 권한
-    private val bluetoothPermissions = arrayOf(Manifest.permission.BLUETOOTH, Manifest.permission.BLUETOOTH_ADMIN, Manifest.permission.ACCESS_COARSE_LOCATION)
 
     // 블루투스 콜백
     private val bluetoothListeners = ArrayList<BluetoothListener>()
@@ -55,8 +48,6 @@ class BluetoothManager(private val context: Context) : BluetoothListener, Blueto
 
     init {
 
-        // 퍼미션 체커
-        permissionChecker = PermissionChecker(context)
         // 디바이스 스캐너
         bluetoothScanner = LeBluetoothSanner(btScannerListener)
         // 채팅 매니저 콜백
@@ -134,20 +125,16 @@ class BluetoothManager(private val context: Context) : BluetoothListener, Blueto
         for (listener in bluetoothListeners) listener.onLostedConnect(deviceName)
     }
 
+
+//    // 체크해야할 권한
+//    private val bluetoothPermissions = arrayOf(Manifest.permission.BLUETOOTH, Manifest.permission.BLUETOOTH_ADMIN, Manifest.permission.ACCESS_COARSE_LOCATION)
+
+
     // 블루투스 스캔
+    @RequiresPermission(allOf = [Manifest.permission.BLUETOOTH, Manifest.permission.BLUETOOTH_ADMIN, Manifest.permission.ACCESS_COARSE_LOCATION])
     override fun startBluetoothDeviceScan() {
         // 퍼미션이 체크 완료되었는가?
-        checkPermission(object : PermissionListener {
-            override fun onPermissionGranted() {
-                // 스캔 시작
-                scanBluetoothDevice()
-            }
-
-            override fun onPermissionDenied(deniedPermissions: List<String>) {
-                deniedPermission()
-            }
-
-        })
+        scanBluetoothDevice()
     }
 
     override fun stopBluetoothDeviceScan() {
@@ -164,11 +151,6 @@ class BluetoothManager(private val context: Context) : BluetoothListener, Blueto
 
     override fun disConnect() {
         if (bluetoothChatManager.isConnected) bluetoothChatManager.disConnect()
-    }
-
-    // 퍼미션 체크
-    private fun checkPermission(listener: PermissionListener) {
-        permissionChecker.checkPermission(bluetoothPermissions, listener)
     }
 
     // 블루투스 스캔 시작

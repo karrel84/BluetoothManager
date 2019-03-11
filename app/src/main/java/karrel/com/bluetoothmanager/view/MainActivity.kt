@@ -1,15 +1,20 @@
 package karrel.com.bluetoothmanager.view
 
+import android.Manifest
 import android.app.Activity
 import android.bluetooth.BluetoothDevice
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
+import android.support.v4.app.ActivityCompat
+import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import android.widget.Toast
 import karrel.com.bluetoothmanager.R
 import karrel.com.bluetoothmanager.presenter.MainPresenter
 import karrel.com.bluetoothmanager.presenter.MainPresenterImpl
@@ -52,7 +57,20 @@ class MainActivity : AppCompatActivity(), MainPresenter.View {
 
     // 버튼 이벤트
     private fun setupButtonEvents() {
-        search.setOnClickListener { presenter.searchBluetoothDevices() }
+        search.setOnClickListener {
+
+            var grantedPermission = ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH) == PackageManager.PERMISSION_GRANTED
+            grantedPermission = grantedPermission && ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_ADMIN) == PackageManager.PERMISSION_GRANTED
+            grantedPermission = grantedPermission && ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
+
+            if (grantedPermission) {
+                presenter.searchBluetoothDevices()
+            } else {
+                // request permission
+                ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.BLUETOOTH, Manifest.permission.BLUETOOTH_ADMIN, Manifest.permission.ACCESS_COARSE_LOCATION), BLUETOOTH_PERMISSION_REQUEST)
+            }
+
+        }
         disconnect.setOnClickListener { presenter.disconnectBluetooth() }
     }
 
@@ -78,16 +96,52 @@ class MainActivity : AppCompatActivity(), MainPresenter.View {
 
         if (requestCode == REQUEST_ENABLE_BT) {
             if (resultCode == Activity.RESULT_OK) {
-                presenter.enabledBluetooth()
+                enabledBluetooth()
             } else {
                 presenter.dissableBluetooth()
             }
         }
     }
 
+    private fun enabledBluetooth() {
+
+        var grantedPermission = ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH) == PackageManager.PERMISSION_GRANTED
+        grantedPermission = grantedPermission && ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_ADMIN) == PackageManager.PERMISSION_GRANTED
+        grantedPermission = grantedPermission && ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
+
+        if (grantedPermission) {
+            presenter.enabledBluetooth()
+        } else {
+            // request permission
+            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.BLUETOOTH, Manifest.permission.BLUETOOTH_ADMIN, Manifest.permission.ACCESS_COARSE_LOCATION), BLUETOOTH_PERMISSION_REQUEST)
+        }
+
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+
+        if (requestCode == BLUETOOTH_PERMISSION_REQUEST) {
+            var isAllGrant = true
+            for (result in grantResults) {
+                isAllGrant = isAllGrant and (result == PackageManager.PERMISSION_GRANTED)
+            }
+            if (isAllGrant) {
+                enabledBluetooth()
+            } else {
+                Toast.makeText(this, "블루투스 권한이 승인되지 않았습니다.", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+
+
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+    }
+
+
     companion object {
 
         private const val REQUEST_ENABLE_BT = 1000
+        private const val BLUETOOTH_PERMISSION_REQUEST = 1004
     }
 
 

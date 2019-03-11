@@ -1,7 +1,10 @@
 package karrel.com.bluetoothmanager.presenter
 
+import android.Manifest
 import android.bluetooth.BluetoothDevice
 import android.content.Context
+import android.support.annotation.RequiresPermission
+import android.support.v4.content.ContextCompat
 import karrel.com.bluetoothmanager.util.ByteConverter
 import karrel.com.btconnector.btmanager.BluetoothListener
 import karrel.com.btconnector.btmanager.BluetoothManager
@@ -88,12 +91,14 @@ class MainPresenterImpl(private val view: MainPresenter.View, context: Context) 
     override fun onDestroy() {
     }
 
+    @RequiresPermission(allOf = [Manifest.permission.BLUETOOTH, Manifest.permission.BLUETOOTH_ADMIN, Manifest.permission.ACCESS_COARSE_LOCATION])
     override fun searchBluetoothDevices() {
         bluetoothManager.startBluetoothDeviceScan()
         view.clearLog()
     }
 
     // BT 설정 성공
+    @RequiresPermission(allOf = [Manifest.permission.BLUETOOTH, Manifest.permission.BLUETOOTH_ADMIN, Manifest.permission.ACCESS_COARSE_LOCATION])
     override fun enabledBluetooth() {
         // 블루투스 탐색 시작
         searchBluetoothDevices()
